@@ -6,6 +6,11 @@ var firstAndPike = {
     var min = Math.ceil(this.minCust);
     var max = Math.floor(this.maxCust);
     return Math.floor(Math.random() * (max - min)) + min;
+  },
+  cookiesPerHr: function () {
+    var avgSales = this.avgSales;
+    var customers = this.rndmCstGn();
+    return Math.floor(avgSales * customers);
   }
 };
 
@@ -17,6 +22,11 @@ var seaTacAir = {
     var min = Math.ceil(this.minCust);
     var max = Math.floor(this.maxCust);
     return Math.floor(Math.random() * (max - min)) + min;
+  },
+  cookiesPerHr: function () {
+    var avgSales = this.avgSales;
+    var customers = this.rndmCstGn();
+    return Math.floor(avgSales * customers);
   }
 };
 
@@ -28,6 +38,16 @@ var seattleCenter = {
     var min = Math.ceil(this.minCust);
     var max = Math.floor(this.maxCust);
     return Math.floor(Math.random() * (max - min)) + min;
+  },
+  cookiesPerHr: function () {
+    var avgSales = this.avgSales;
+    var customers = this.rndmCstGn();
+    return Math.floor(avgSales * customers);
+  },
+  cookiesPerHr: function () {
+    var avgSales = this.avgSales;
+    var customers = this.rndmCstGn();
+    return Math.floor(avgSales * customers);
   }
 };
 
@@ -39,6 +59,11 @@ var capitolHill = {
     var min = Math.ceil(this.minCust);
     var max = Math.floor(this.maxCust);
     return Math.floor(Math.random() * (max - min)) + min;
+  },
+  cookiesPerHr: function () {
+    var avgSales = this.avgSales;
+    var customers = this.rndmCstGn();
+    return Math.floor(avgSales * customers);
   }
 };
 
@@ -50,5 +75,10 @@ var alki = {
     var min = Math.ceil(this.minCust);
     var max = Math.floor(this.maxCust);
     return Math.floor(Math.random() * (max - min)) + min;
+  },
+  cookiesPerHr: function () {
+    var avgSales = this.avgSales;
+    var customers = this.rndmCstGn();
+    return Math.floor(avgSales * customers);
   }
 };
