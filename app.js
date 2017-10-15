@@ -1,519 +1,142 @@
 'use strict';
-//create an array of open store hours
+//table data
+
+//we need to define our hours and store them
 var hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
 
-//First and Pike Location
-var firstAndPike = {
-  name: 'First and Pike',
-  //creating my key value pairs inside of my object they are called properties
-  minCustPerHour: 23,
-  maxCustPerHour: 65,
-  avgCookieSoldPerHour: 6.3,
-  randCustByHour: [],
-  cookiesSoldByHour: [],
-  totalCookies: 0,
-  //method for random customers by hour
-  calcRandCustByHour: function() {
+//we need to create a place for our list of all locations to be placed when we create them
+var allLocations = [];
+
+//we need to define a variable that will be dynamic depending on how many cookies
+var totalCookiesByHour = 0;
+//totalTotal
+var netTotal = 0;
+
+//access the table element in the html
+var tableEl = document.getElementById('cookiestands');
+
+function makeTableHead(inputArray) {
+  //make a table row
+  var trEl = document.createElement('tr');
+  var emptyTd = document.createElement('td');
+  var cookieTotal = document.createElement('td');
+  cookieTotal.textContent = 'Daily Location Totals';
+
+  trEl.appendChild(emptyTd);
+  //iterate through array
+  for(var i = 0; i < inputArray.length; i++) {
+    var thEl = document.createElement('th');//create
+    thEl.textContent = inputArray[i];//content
+    trEl.appendChild(thEl); //add cell to the row
+  }
+  trEl.appendChild(cookieTotal);
+  tableEl.appendChild(trEl);//add row to the table
+}
+makeTableHead(hours);
+
+//constructors! think of it like a specialized machine in a factory that creates new objects
+//prototypes are the functionality that the machine adds to the objects
+
+//constructor function begin with an Uppercase letter
+
+function MakeLocation(name, minCustPerHour, maxCustPerHour, avgCookieSoldPerHour) {
+  //a function called MakeLocation will be a template for creating new objects that represent other locations
+  //the statements in this function add properties and or methods to the objects
+  //the this keyword is used instead of the object name to indicate that th property or method belongs to the object that this function creates
+  //this function has four parameters and each one sets the value of a property in the object
+  this.name = name;
+  this.minCustPerHour = minCustPerHour;
+  this.maxCustPerHour = maxCustPerHour;
+  this.avgCookieSoldPerHour = avgCookieSoldPerHour;
+  //why is this an array?
+  this.randCustByHour = [];
+  this.cookiesSoldByHour = [];
+  this.totalCookies = 0;
+  allLocations.push(this);
+  //using the this keyword in front of the method to show that the method belongs to the object that this function creates
+  // this.calcRandCustByHour = function() {
+  // METHODS GO HERE
+  //THINK ABOUT PROTOTYPES
+  // }
+  this.calcRandCustByHour = function() {
     for(var i = 0; i < hours.length; i++) {
       this.randCustByHour.push(Math.floor(Math.random() * (this.maxCustPerHour - this.minCustPerHour + 1)) + this.minCustPerHour);
-      console.log(this.randCustByHour[i]);
-
     }
-  },
+  };
   //method for cookies sold by hours
-  calcCookiesSoldByHour: function() {
+  this.calcCookiesSoldByHour = function() {
     for(var j = 0; j < hours.length; j++) {
       this.cookiesSoldByHour.push(Math.round(this.avgCookieSoldPerHour * this.randCustByHour[j]));
-      console.log(this.cookiesSoldByHour[j]);
     }
-  },
-  render: function() {
-    var firstandpike = document.getElementById('firstandpike');
-    var fandp = document.getElementById('fandp');
-    //calling the methods in the object literal
-    this.calcRandCustByHour();
-    this.calcCookiesSoldByHour();
-    //DOM manipulation irl!!!
-    //create a vairable to abe able to append an item to our list
-    //create a new h3 element
-    var h3El = document.createElement('h3');
-    //give text to the new h3 element
-    h3El.textContent = this.name;
-    fandp.appendChild(h3El);
-    for(var k = 0; k < hours.length; k++) {
-      //stepping through our hours array
-      var liEl = document.createElement('li');
-      //creating li elemnts with text of the hours
-      liEl.textContent = hours[k] + ': ' + this.cookiesSoldByHour[k] + ' cookies';
-      console.log(liEl);
-      firstandpike.appendChild(liEl);
+  };
+  //cookie Totals
+  this.getTotal = function() {
+    for(var k = 0; k < this.cookiesSoldByHour.length; k++) {
+      this.totalCookies = this.totalCookies + this.cookiesSoldByHour[k];
     }
+  };
+  this.calcRandCustByHour();
+  this.calcCookiesSoldByHour();
+  this.getTotal();
+};
+
+//remember to call the METHODS in the constructor that are now prototypes available to the new objects the constructor will MakeLocation
+// this.calcRandCustByHour();
+
+//call the functions in a function if you want
+//this constructor function creates five new objects with their own unique values used in properties of this object (name, minCustPerHour, maxCustPerHour, avgCookieSoldPerHour)
+function makeStands() {
+  new MakeLocation('First and Pike', 23, 65, 6.3);
+  new MakeLocation('SeaTac Airport', 3, 24, 1.2);
+  new MakeLocation('Seattle Center', 11, 38, 3.7);
+  new MakeLocation('Capitol Hill', 20, 38, 2.3);
+  new MakeLocation('Alki', 2, 16, 4.6);
+
+  //make one for each store
+};
+makeStands();
+
+//time to create the table in javascript
+//make header row
+//table needs an id in html
+
+function makeTableBody(inputArray) {
+  for(var i = 0; i < inputArray.length; i++) {
+    var trEl = document.createElement('tr');
+    var storeName = document.createElement('td');
+    var totalCookies = document.createElement('td');
+    storeName.textContent = inputArray[i].name;
+
+    trEl.appendChild(storeName);
+
+    for( var j = 0; j < inputArray[i].cookiesSoldByHour.length; j++) {
+      var tdEl = document.createElement('td');
+      tdEl.textContent = inputArray[i].cookiesSoldByHour[j];
+      trEl.appendChild(tdEl);
+    }
+    totalCookies.textContent = inputArray[i].totalCookies;
+    trEl.appendChild(totalCookies);
+    tableEl.appendChild(trEl);
   }
 
-};
-firstAndPike.render();
-///////////////////////////////////////////////////////////////////////////////
-//First and Pike Location
-var seaTacAirport = {
-  name: 'SeaTac Airport',
-  //creating my key value pairs inside of my object they are called properties
-  minCustPerHour: 3,
-  maxCustPerHour: 24,
-  avgCookieSoldPerHour: 1.2,
-  randCustByHour: [],
-  cookiesSoldByHour: [],
-  totalCookies: 0,
-  //method for random customers by hour
-  calcRandCustByHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.randCustByHour.push(Math.floor(Math.random() * (this.maxCustPerHour - this.minCustPerHour + 1)) + this.minCustPerHour);
-      console.log(this.randCustByHour[i]);
+}
+makeTableBody(allLocations);
 
-    }
-  },
-  //method for cookies sold by hours
-  calcCookiesSoldByHour: function() {
-    for(var j = 0; j < hours.length; j++) {
-      this.cookiesSoldByHour.push(Math.round(this.avgCookieSoldPerHour * this.randCustByHour[j]));
-      console.log(this.cookiesSoldByHour[j]);
-    }
-  },
-  render: function() {
-    var seatacairport = document.getElementById('seatacairport');
-    var sTa = document.getElementById('sTa');
-    //calling the methods in the object literal
-    this.calcRandCustByHour();
-    this.calcCookiesSoldByHour();
-    //DOM manipulation irl!!!
-    //create a vairable to abe able to append an item to our list
-    //create a new h3 element
-    var h3El = document.createElement('h3');
-    //give text to the new h3 element
-    h3El.textContent = this.name;
-    sTa.appendChild(h3El);
-    for(var k = 0; k < hours.length; k++) {
-      //stepping through our hours array
-      var liEl = document.createElement('li');
-      //creating li elemnts with text of the hours
-      liEl.textContent = hours[k] + ': ' + this.cookiesSoldByHour[k] + ' cookies';
-      console.log(liEl);
-      seatacairport.appendChild(liEl);
-    }
-  }
-
-};
-seaTacAirport.render();
-///////////////////////////////////////////////////////////////////////////////
-//First and Pike Location
-var seattleCenter = {
-  name: 'Seattle Center',
-  //creating my key value pairs inside of my object they are called properties
-  minCustPerHour: 11,
-  maxCustPerHour: 38,
-  avgCookieSoldPerHour: 3.7,
-  randCustByHour: [],
-  cookiesSoldByHour: [],
-  totalCookies: 0,
-  //method for random customers by hour
-  calcRandCustByHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.randCustByHour.push(Math.floor(Math.random() * (this.maxCustPerHour - this.minCustPerHour + 1)) + this.minCustPerHour);
-      console.log(this.randCustByHour[i]);
-
-    }
-  },
-  //method for cookies sold by hours
-  calcCookiesSoldByHour: function() {
-    for(var j = 0; j < hours.length; j++) {
-      this.cookiesSoldByHour.push(Math.round(this.avgCookieSoldPerHour * this.randCustByHour[j]));
-      console.log(this.cookiesSoldByHour[j]);
-    }
-  },
-  render: function() {
-    var seattlecenter = document.getElementById('seattlecenter');
-    var sC = document.getElementById('sC');
-    //calling the methods in the object literal
-    this.calcRandCustByHour();
-    this.calcCookiesSoldByHour();
-    //DOM manipulation irl!!!
-    //create a vairable to abe able to append an item to our list
-    //create a new h3 element
-    var h3El = document.createElement('h3');
-    //give text to the new h3 element
-    h3El.textContent = this.name;
-    sC.appendChild(h3El);
-    for(var k = 0; k < hours.length; k++) {
-      //stepping through our hours array
-      var liEl = document.createElement('li');
-      //creating li elemnts with text of the hours
-      liEl.textContent = hours[k] + ': ' + this.cookiesSoldByHour[k] + ' cookies';
-      console.log(liEl);
-      seattlecenter.appendChild(liEl);
-    }
-  }
-
-};
-seattleCenter.render();
-///////////////////////////////////////////////////////////////////////////////
-//First and Pike Location
-var capitolHill = {
-  name: 'Capitol Hill',
-  //creating my key value pairs inside of my object they are called properties
-  minCustPerHour: 20,
-  maxCustPerHour: 38,
-  avgCookieSoldPerHour: 2.3,
-  randCustByHour: [],
-  cookiesSoldByHour: [],
-  totalCookies: 0,
-  //method for random customers by hour
-  calcRandCustByHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.randCustByHour.push(Math.floor(Math.random() * (this.maxCustPerHour - this.minCustPerHour + 1)) + this.minCustPerHour);
-      console.log(this.randCustByHour[i]);
-
-    }
-  },
-  //method for cookies sold by hours
-  calcCookiesSoldByHour: function() {
-    for(var j = 0; j < hours.length; j++) {
-      this.cookiesSoldByHour.push(Math.round(this.avgCookieSoldPerHour * this.randCustByHour[j]));
-      console.log(this.cookiesSoldByHour[j]);
-    }
-  },
-  render: function() {
-    var capitolhill = document.getElementById('capitolhill');
-    var cH = document.getElementById('cH');
-    //calling the methods in the object literal
-    this.calcRandCustByHour();
-    this.calcCookiesSoldByHour();
-    //DOM manipulation irl!!!
-    //create a vairable to abe able to append an item to our list
-    //create a new h3 element
-    var h3El = document.createElement('h3');
-    //give text to the new h3 element
-    h3El.textContent = this.name;
-    cH.appendChild(h3El);
-    for(var k = 0; k < hours.length; k++) {
-      //stepping through our hours array
-      var liEl = document.createElement('li');
-      //creating li elemnts with text of the hours
-      liEl.textContent = hours[k] + ': ' + this.cookiesSoldByHour[k] + ' cookies';
-      console.log(liEl);
-      capitolhill.appendChild(liEl);
-    }
-  }
-
-};
-capitolHill.render();
-///////////////////////////////////////////////////////////////////////////////
-//First and Pike Location
-var alKi = {
-  name: 'Alki',
-  //creating my key value pairs inside of my object they are called properties
-  minCustPerHour: 20,
-  maxCustPerHour: 38,
-  avgCookieSoldPerHour: 2.3,
-  randCustByHour: [],
-  cookiesSoldByHour: [],
-  totalCookies: 0,
-  //method for random customers by hour
-  calcRandCustByHour: function() {
-    for(var i = 0; i < hours.length; i++) {
-      this.randCustByHour.push(Math.floor(Math.random() * (this.maxCustPerHour - this.minCustPerHour + 1)) + this.minCustPerHour);
-      console.log(this.randCustByHour[i]);
-
-    }
-  },
-  //method for cookies sold by hours
-  calcCookiesSoldByHour: function() {
-    for(var j = 0; j < hours.length; j++) {
-      this.cookiesSoldByHour.push(Math.round(this.avgCookieSoldPerHour * this.randCustByHour[j]));
-      console.log(this.cookiesSoldByHour[j]);
-    }
-  },
-  render: function() {
-    var alki = document.getElementById('alki');
-    var aK = document.getElementById('aK');
-    //calling the methods in the object literal
-    this.calcRandCustByHour();
-    this.calcCookiesSoldByHour();
-    //DOM manipulation irl!!!
-    //create a vairable to abe able to append an item to our list
-    //create a new h3 element
-    var h3El = document.createElement('h3');
-    //give text to the new h3 element
-    h3El.textContent = this.name;
-    aK.appendChild(h3El);
-    for(var k = 0; k < hours.length; k++) {
-      //stepping through our hours array
-      var liEl = document.createElement('li');
-      //creating li elemnts with text of the hours
-      liEl.textContent = hours[k] + ': ' + this.cookiesSoldByHour[k] + ' cookies';
-      console.log(liEl);
-      alki.appendChild(liEl);
-    }
-  }
-
-};
-alKi.render();
-///////////////////////////////////////////
-////////////////////////////////////////////
-// 'use strict';
+// function makeFooter(inputArray) {
+//   for(var i = 0; i < inputArray.length; i++ ) {
+//     var trEl = document.createElement('tr');
+//     var hourlyTotalTitle = document.createElement('td');
+//     var hourlyTotals = document.createElement('td');
 //
-// var hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm'];
 //
-// var firstAndPike = {
-//   minCust: 23 ,
-//   maxCust: 65 ,
-//   avgSales: 6.3 ,
-//   custPerHour: [],
-//   cookiesPerHour: [],
-//   totalCookies: 0,
-//   getRndmCst: function() {
-//     for(var i = 0; i < hours.length; i++) {
-//       this.custPerHour.push(Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust);
-//       console.log(this.custPerHour[i]);
-//     }
-//   },
-//   getCookiesPerHour: function () {
-//     for (var j = 0; j < hours.length; j++) {
-//       this.cookiesPerHour.push(Math.round(this.cookiesPerHour * this.custPerHour * this.randCust[j]));
-//       console.log(this.cookiesPerHour[j]);
-//     }
-//   },
-//   render: function() {
-//     var firstandpike = document.getElementById('firstandpike');
-//     var fandp = document.getElementById(fandp);
-//     this.getRndmCst();
-//     this.getCookiesPerHour();
-//     var h3EL = document.createElement('h3');
-//     h3EL.textContent = this.name;
-//     fandp.appendChild(h3EL);
-//     for(var k = 0; k < hours.length; k++){
-//       var liEL = document.createElement('li');
-//       liEL.textContent = hours[k] + ': ' + this.cookiesPerHour[k] + ' cookies';
-//       console.log(liEL);
-//       firstandpike.appenChild(liEL);
-//     }
-//   }
-// };
-// firstAndPike.render();
-// ////////////////////////////////////////////
-// var seaTac = {
-//   minCust: 3 ,
-//   maxCust: 24 ,
-//   avgSales: 1.2 ,
-//   custPerHour: [],
-//   cookiesPerHour: [],
-//   totalCookies: 0,
-//   getRndmCst: function() {
-//     for(var i = 0; i < hours.length; i++) {
-//       this.custPerHour.push(Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust);
-//       console.log(this.custPerHour[i]);
-//     }
-//   },
-//   getCookiesPerHour: function () {
-//     for (var j = 0; j < hours.length; j++) {
-//       this.cookiesPerHour.push(Math.round(this.cookiesPerHour * this.custPerHour * this.randCust[j]));
-//       console.log(this.cookiesPerHour[j]);
-//     }
-//   },
-//   render: function() {
-//     var seatac = document.getElementById('seatac');
-//     var sTa = document.getElementById(sTac);
-//     this.getRndmCst();
-//     this.getCookiesPerHour();
-//     var h3EL = document.createElement('h3');
-//     h3EL.textContent = this.name;
-//     sTa.appendChild(h3EL);
-//     for(var k = 0; k < hours.length; k++){
-//       var liEL = document.createElement('li');
-//       liEL.textContent = hours[k] + ': ' + this.cookiesPerHour[k] + ' cookies';
-//       console.log(liEL);
-//       seatac.appenChild(liEL);
-//     }
-//   }
-// };
-// seaTac.render();
-// ////////////////////////////////////////////
-// var seattleCenter = {
-//   minCust: 11 ,
-//   maxCust: 38 ,
-//   avgSales: 3.7 ,
-//   custPerHour: [],
-//   cookiesPerHour: [],
-//   totalCookies: 0,
-//   getRndmCst: function() {
-//     for(var i = 0; i < hours.length; i++) {
-//       this.custPerHour.push(Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust);
-//       console.log(this.custPerHour[i]);
-//     }
-//   },
-//   getCookiesPerHour: function () {
-//     for (var j = 0; j < hours.length; j++) {
-//       this.cookiesPerHour.push(Math.round(this.cookiesPerHour * this.custPerHour * this.randCust[j]));
-//       console.log(this.cookiesPerHour[j]);
-//     }
-//   },
-//   render: function() {
-//     var seattlecenter = document.getElementById('seattlecenter');
-//     var sC = document.getElementById(sC);
-//     this.getRndmCst();
-//     this.getCookiesPerHour();
-//     var h3EL = document.createElement('h3');
-//     h3EL.textContent = this.name;
-//     sC.appendChild(h3EL);
-//     for(var k = 0; k < hours.length; k++){
-//       var liEL = document.createElement('li');
-//       liEL.textContent = hours[k] + ': ' + this.cookiesPerHour[k] + ' cookies';
-//       console.log(liEL);
-//       seattlecenter.appenChild(liEL);
-//     }
-//   }
-// };
-// seattleCenter.render();
-// ///////////////////////////////////////////
-// var capHill = {
-//   minCust: 20 ,
-//   maxCust: 38 ,
-//   avgSales: 2.3 ,
-//   custPerHour: [],
-//   cookiesPerHour: [],
-//   totalCookies: 0,
-//   getRndmCst: function() {
-//     for(var i = 0; i < hours.length; i++) {
-//       this.custPerHour.push(Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust);
-//       console.log(this.custPerHour[i]);
-//     }
-//   },
-//   getCookiesPerHour: function () {
-//     for (var j = 0; j < hours.length; j++) {
-//       this.cookiesPerHour.push(Math.round(this.cookiesPerHour * this.custPerHour * this.randCust[j]));
-//       console.log(this.cookiesPerHour[j]);
-//     }
-//   },
-//   render: function() {
-//     var caphill = document.getElementById('caphill');
-//     var cH = document.getElementById(cH);
-//     this.getRndmCst();
-//     this.getCookiesPerHour();
-//     var h3EL = document.createElement('h3');
-//     h3EL.textContent = this.name;
-//     cH.appendChild(h3EL);
-//     for(var k = 0; k < hours.length; k++){
-//       var liEL = document.createElement('li');
-//       liEL.textContent = hours[k] + ': ' + this.cookiesPerHour[k] + ' cookies';
-//       console.log(liEL);
-//       caphill.appenChild(liEL);
-//     }
-//   }
-// };
-// CapHill.render();
-// ////////////////////////////////////////////
-// var alki = {
-//   minCust: 2 ,
-//   maxCust: 16 ,
-//   avgSales: 4.6 ,
-//   custPerHour: [],
-//   cookiesPerHour: [],
-//   totalCookies: 0,
-//   getRndmCst: function() {
-//     for(var i = 0; i < hours.length; i++) {
-//       this.custPerHour.push(Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust);
-//       console.log(this.custPerHour[i]);
-//     }
-//   },
-//   getCookiesPerHour: function () {
-//     for (var j = 0; j < hours.length; j++) {
-//       this.cookiesPerHour.push(Math.round(this.cookiesPerHour * this.custPerHour * this.randCust[j]));
-//       console.log(this.cookiesPerHour[j]);
-//     }
-//   },
-//   render: function() {
-//     var alKi = document.getElementById('alKi');
-//     var aK = document.getElementById(fandp);
-//     this.getRndmCst();
-//     this.getCookiesPerHour();
-//     var h3EL = document.createElement('h3');
-//     h3EL.textContent = this.name;
-//     aK.appendChild(h3EL);
-//     for(var k = 0; k < hours.length; k++){
-//       var liEL = document.createElement('li');
-//       liEL.textContent = hours[k] + ': ' + this.cookiesPerHour[k] + ' cookies';
-//       console.log(liEL);
-//       alKi.appenChild(liEL);
-//     }
-//   }
-// };
-// alki.render();
-////////////////////////////////////////////////////////////////////////////////////////
-/////////////////OLD CODE///////////////////
-////////////////////////////////////////////
-// var seaTacAir = {
-//   minCust: 3 ,
-//   maxCust: 24 ,
-//   avgSales: 1.2 ,
-//   rndmCstGn: function() {
-//     var min = Math.round(this.minCust);
-//     var max = Math.round(this.maxCust);
-//     return Math.round(Math.random() * (max - min)) + min;
-//   },
-//   cookiesPerHr: function () {
-//     var avgSales = this.avgSales;
-//     var customers = this.rndmCstGn();
-//     return Math.round(avgSales * customers);
-//   }
-// };
-//
-// var seattleCenter = {
-//   minCust: 11 ,
-//   maxCust: 38 ,
-//   avgSales: 3.7 ,
-//   rndmCstGn: function() {
-//     var min = Math.round(this.minCust);
-//     var max = Math.round(this.maxCust);
-//     return Math.round(Math.random() * (max - min)) + min;
-//   },
-//   cookiesPerHr: function () {
-//     var avgSales = this.avgSales;
-//     var customers = this.rndmCstGn();
-//     return Math.round(avgSales * customers);
-//   },
-//   cookiesPerHr: function () {
-//     var avgSales = this.avgSales;
-//     var customers = this.rndmCstGn();
-//     return Math.round(avgSales * customers);
-//   }
-// };
-//
-// var capitolHill = {
-//   minCust: 20 ,
-//   maxCust: 38 ,
-//   avgSales: 2.3 ,
-//   rndmCstGn: function() {
-//     var min = Math.round(this.minCust);
-//     var max = Math.round(this.maxCust);
-//     return Math.round(Math.random() * (max - min)) + min;
-//   },
-//   cookiesPerHr: function () {
-//     var avgSales = this.avgSales;
-//     var customers = this.rndmCstGn();
-//     return Math.round(avgSales * customers);
-//   }
-// };
-//
-// var alki = {
-//   minCust: 2 ,
-//   maxCust: 16 ,
-//   avgSales: 4.6 ,
-//   rndmCstGn: function() {
-//     var min = Math.round(this.minCust);
-//     var max = Math.round(this.maxCust);
-//     return Math.round(Math.random() * (max - min)) + min;
-//   },
-//   cookiesPerHr: function () {
-//     var avgSales = this.avgSales;
-//     var customers = this.rndmCstGn();
-//     return Math.round(avgSales * customers);
-//   }
-// };
+// }
+//consider a for loop for the hours
+//create a th element
+//give the th element some text content like hours[i];
+//appendChild
+
+//create a th element
+//give the th element text content 'Daily Location Total'
+//append child
+
+//remeber to call makeHeaderRow();
