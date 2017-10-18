@@ -140,3 +140,15 @@ makeTableBody(allLocations);
 //append child
 
 //remeber to call makeHeaderRow();
+
+function newStoreHandler (event) {
+  event.preventDefault ();
+  if (!event.target.storeName.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCust.value) {
+    return alert('Fields cannot be empty!');
+  }
+}
+
+
+var storeForm = document.getElementById('storeForm'); //access the form from html
+console.log(storeForm);
+storeForm.addEventListener('submit', newStoreHandler); //This is the listener and it's listeng for the submit events and were passing a submit handler
