@@ -75,6 +75,9 @@ function MakeLocation(name, minCustPerHour, maxCustPerHour, avgCookieSoldPerHour
       this.totalCookies = this.totalCookies + this.cookiesSoldByHour[k];
     }
   };
+  this.makeRow = function() {
+
+  };
   this.calcRandCustByHour();
   this.calcCookiesSoldByHour();
   this.getTotal();
@@ -100,28 +103,6 @@ makeStands();
 //make header row
 //table needs an id in html
 
-function makeTableBody(inputArray) {
-  for(var i = 0; i < inputArray.length; i++) {
-    var trEl = document.createElement('tr');
-    var storeName = document.createElement('td');
-    var totalCookies = document.createElement('td');
-    storeName.textContent = inputArray[i].name;
-
-    trEl.appendChild(storeName);
-
-    for( var j = 0; j < inputArray[i].cookiesSoldByHour.length; j++) {
-      var tdEl = document.createElement('td');
-      tdEl.textContent = inputArray[i].cookiesSoldByHour[j];
-      trEl.appendChild(tdEl);
-    }
-    totalCookies.textContent = inputArray[i].totalCookies;
-    trEl.appendChild(totalCookies);
-    tableEl.appendChild(trEl);
-  }
-
-}
-makeTableBody(allLocations);
-
 // function makeFooter(inputArray) {
 //   for(var i = 0; i < inputArray.length; i++ ) {
 //     var trEl = document.createElement('tr');
@@ -146,8 +127,14 @@ function newStoreHandler (event) {
   if (!event.target.storeName.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCust.value) {
     return alert('Fields cannot be empty!');
   }
-}
+  var storeName = event.target.storeName.value;
+  var minCust = event.target.minCust.value;
+  var maxCust = event.target.maxCust.value;
+  var avgCust = event.target.avgCust.value;
+  console.log(avgCust);
+  new MakeLocation(storeName, minCust, maxCust, avgCust);
 
+}
 
 var storeForm = document.getElementById('storeForm'); //access the form from html
 console.log(storeForm);
