@@ -81,6 +81,7 @@ function MakeLocation(name, minCustPerHour, maxCustPerHour, avgCookieSoldPerHour
   this.calcRandCustByHour();
   this.calcCookiesSoldByHour();
   this.getTotal();
+  this.makeRow()
 };
 
 //remember to call the METHODS in the constructor that are now prototypes available to the new objects the constructor will MakeLocation
@@ -98,6 +99,49 @@ function makeStands() {
   //make one for each store
 };
 makeStands();
+function makeTableBody(inputArray) {
+  for (var i = 0; i < inputArray.length; i++) {
+    var trEl = document.createElement('tr');
+    var storeName = document.createElement('td');
+    var totalCookies = document.createElement('td');
+    storeName.textContent = inputArray[i].name;
+
+    trEl.appendChild(storeName);
+
+    for( var j = 0; j < inputArray[i].cookiesSoldByHour.length; j++) {
+      var tdEl = document.createElement('td');
+      tdEl.textContent = inputArray[i].cookiesSoldByHour[j];
+      trEl.appendChild(tdEl);
+    }
+
+    totalCookies.textContent = inputArray[i].totalCookies;
+    trEl.appendChild(totalCookies);
+    tableEl.appendChild(trEl);
+  }
+
+}
+
+function addTableRow(store) {
+  console.log('STORE ', store)
+  var trEl = document.createElement('tr');
+  var storeName = document.createElement('td');
+  var totalCookies = document.createElement('td');
+  storeName.textContent = store.name;
+
+  trEl.appendChild(storeName);
+
+  for (var i = 0; i < hours.length; i++) {
+    var tdEl = document.createElement('td');
+    tdEl.textContent = store.cookiesSoldByHour[i];
+    trEl.appendChild(tdEl);
+  }
+
+  totalCookies.textContent = store.totalCookies;
+  trEl.appendChild(totalCookies);
+  tableEl.appendChild(trEl);
+}
+
+makeTableBody(allLocations);
 
 //time to create the table in javascript
 //make header row
@@ -123,7 +167,7 @@ makeStands();
 //remeber to call makeHeaderRow();
 
 function newStoreHandler (event) {
-  event.preventDefault ();
+  event.preventDefault();
   if (!event.target.storeName.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCust.value) {
     return alert('Fields cannot be empty!');
   }
@@ -131,9 +175,8 @@ function newStoreHandler (event) {
   var minCust = event.target.minCust.value;
   var maxCust = event.target.maxCust.value;
   var avgCust = event.target.avgCust.value;
-  console.log(avgCust);
-  new MakeLocation(storeName, minCust, maxCust, avgCust);
 
+  addTableRow(new MakeLocation(storeName, minCust, maxCust, avgCust));
 }
 
 var storeForm = document.getElementById('storeForm'); //access the form from html
