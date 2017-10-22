@@ -75,9 +75,13 @@ function MakeLocation(name, minCustPerHour, maxCustPerHour, avgCookieSoldPerHour
       this.totalCookies = this.totalCookies + this.cookiesSoldByHour[k];
     }
   };
+  this.makeRow = function() {
+
+  };
   this.calcRandCustByHour();
   this.calcCookiesSoldByHour();
   this.getTotal();
+  this.makeRow();
 };
 
 //remember to call the METHODS in the constructor that are now prototypes available to the new objects the constructor will MakeLocation
@@ -95,13 +99,8 @@ function makeStands() {
   //make one for each store
 };
 makeStands();
-
-//time to create the table in javascript
-//make header row
-//table needs an id in html
-
 function makeTableBody(inputArray) {
-  for(var i = 0; i < inputArray.length; i++) {
+  for (var i = 0; i < inputArray.length; i++) {
     var trEl = document.createElement('tr');
     var storeName = document.createElement('td');
     var totalCookies = document.createElement('td');
@@ -114,13 +113,65 @@ function makeTableBody(inputArray) {
       tdEl.textContent = inputArray[i].cookiesSoldByHour[j];
       trEl.appendChild(tdEl);
     }
+
     totalCookies.textContent = inputArray[i].totalCookies;
     trEl.appendChild(totalCookies);
     tableEl.appendChild(trEl);
   }
 
 }
+
+function addTableRow(store) {
+  var trEl = document.createElement('tr');
+  var storeName = document.createElement('td');
+  var totalCookies = document.createElement('td');
+  storeName.textContent = store.name;
+
+  trEl.appendChild(storeName);
+
+  for (var i = 0; i < hours.length; i++) {
+    var tdEl = document.createElement('td');
+    tdEl.textContent = store.cookiesSoldByHour[i];
+    trEl.appendChild(tdEl);
+  }
+
+  totalCookies.textContent = store.totalCookies;
+  trEl.appendChild(totalCookies);
+  tableEl.appendChild(trEl);
+}
+
 makeTableBody(allLocations);
+
+function addTableFooter (inputArray) {
+  var grandTotal = 0;
+  var trEl = document.createElement('tr');
+  var title = document.createElement('td');
+  var grandTotals = document.createElement('td');
+  title.textContent = 'Totals';
+  trEl.appendChild(title);
+
+  for (var i = 0; i < hours.length; i++) {
+    var total = 0;
+    for (var j = 0; j < inputArray.length; j++) {
+      total += parseInt(inputArray[j].cookiesSoldByHour[i]);
+    }
+
+    var tdEl = document.createElement('td');
+    tdEl.textContent = total;
+    trEl.appendChild(tdEl);
+
+    grandTotal += total;
+  }
+  grandTotals.textContent = grandTotal;
+  trEl.appendChild(grandTotals);
+  tableEl.appendChild(trEl);
+}
+
+addTableFooter(allLocations);
+
+//time to create the table in javascript
+//make header row
+//table needs an id in html
 
 // function makeFooter(inputArray) {
 //   for(var i = 0; i < inputArray.length; i++ ) {
@@ -140,3 +191,20 @@ makeTableBody(allLocations);
 //append child
 
 //remeber to call makeHeaderRow();
+
+function newStoreHandler (event) {
+  event.preventDefault();
+  if (!event.target.storeName.value || !event.target.minCust.value || !event.target.maxCust.value || !event.target.avgCust.value) {
+    return alert('Fields cannot be empty!');
+  }
+  var storeName = event.target.storeName.value;
+  var minCust = event.target.minCust.value;
+  var maxCust = event.target.maxCust.value;
+  var avgCust = event.target.avgCust.value;
+
+  addTableRow(new MakeLocation(storeName, minCust, maxCust, avgCust));
+}
+
+var storeForm = document.getElementById('storeForm'); //access the form from html
+console.log(storeForm);
+storeForm.addEventListener('submit', newStoreHandler); //This is the listener and it's listeng for the submit events and were passing a submit handler
