@@ -81,7 +81,7 @@ function MakeLocation(name, minCustPerHour, maxCustPerHour, avgCookieSoldPerHour
   this.calcRandCustByHour();
   this.calcCookiesSoldByHour();
   this.getTotal();
-  this.makeRow()
+  this.makeRow();
 };
 
 //remember to call the METHODS in the constructor that are now prototypes available to the new objects the constructor will MakeLocation
@@ -122,7 +122,6 @@ function makeTableBody(inputArray) {
 }
 
 function addTableRow(store) {
-  console.log('STORE ', store)
   var trEl = document.createElement('tr');
   var storeName = document.createElement('td');
   var totalCookies = document.createElement('td');
@@ -142,6 +141,33 @@ function addTableRow(store) {
 }
 
 makeTableBody(allLocations);
+
+function addTableFooter (inputArray) {
+  var grandTotal = 0;
+  var trEl = document.createElement('tr');
+  var title = document.createElement('td');
+  var grandTotals = document.createElement('td');
+  title.textContent = 'Totals';
+  trEl.appendChild(title);
+
+  for (var i = 0; i < hours.length; i++) {
+    var total = 0;
+    for (var j = 0; j < inputArray.length; j++) {
+      total += parseInt(inputArray[j].cookiesSoldByHour[i]);
+    }
+
+    var tdEl = document.createElement('td');
+    tdEl.textContent = total;
+    trEl.appendChild(tdEl);
+
+    grandTotal += total;
+  }
+  grandTotals.textContent = grandTotal;
+  trEl.appendChild(grandTotals);
+  tableEl.appendChild(trEl);
+}
+
+addTableFooter(allLocations);
 
 //time to create the table in javascript
 //make header row
