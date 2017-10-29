@@ -8,7 +8,25 @@
   <body>
     <!-- notice that there is no longer a list here -->
     <h3>Daily Salmon Cookie Sales By Hour and Location</h3>
-    <table id="cookiestands"></table>
+      <form id="storeForm">
+        <fieldset>
+          <legend>New Store Submit</legend>
+          <label for="storeName">Store Name: </label>
+          <input name="storeName" type="text" />
+
+          <label for="minCust">Min Cust: </label>
+          <input name="minCust" type="text" />
+
+          <label for="maxCust">Max Cust: </label>
+          <input name="maxCust" type="text" />
+
+          <label for="avgCust">Ave Cust: </label>
+          <input name="avgCust" type="text" />
+
+          <button id="sbmitButton" type="submit" name="button"> Add New Store!</button>
+        </fieldset>
+      </form>
+    <table id="cookie-stands"></table>
     <script src="app.js" type="text/javascript"></script>
   </body>
 </html>
